@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 
-const servoRouter = require('./routes/servoRoute');
+const ledRoute = require('./routes/ledRoute');
 
-app.use(servoRouter);
+app.use(ledRoute);
 
 module.exports = app;
