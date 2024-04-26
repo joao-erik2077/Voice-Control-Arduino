@@ -45,19 +45,26 @@ const commands = {
     TROCAR_LUZES: () => {led('red'); led('yellow'); led('green')},
 };
 
+const recordingButton = document.getElementById('recordingBtn');
+const recordingBtn = recording => recordingButton.classList.replace(`${recording ? 'btn-outline-danger' : 'btn-danger'}`, `${recording ? 'btn-danger' : 'btn-outline-danger'}`);
 let recording = false;
+const output = document.querySelector('#output');
 
-
+const recognition = new webkitSpeechRecognition();
+recognition.interimResults = true;
+recognition.lang = "pt-BR";
+recognition.continuous = true;
+recognition.onend = () => {
+  recording = false;
+  recordingBtn(false)
+};
 
 const startRecognition = () => {
-    const output = document.querySelector('#output');
-    const recognition = new webkitSpeechRecognition();
-    recognition.interimResults = true;
-    recognition.lang = "pt-BR";
-    recognition.continuous = true;
+  recording = true;
+  recordingBtn(recording);
     recognition.start();
     // This event happens when you talk in the microphone
-    recognition.onresult = function(event) {
+    recognition.onresult = event => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
           // Here you can get the string of what you told
@@ -72,5 +79,11 @@ const startRecognition = () => {
           }
         }
       }
+      
     };
+    
 };
+
+const endRecognition = () => recognition.abort();
+
+const switchRecognition = () => recording ? endRecognition() : startRecognition();
